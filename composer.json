@@ -3,7 +3,7 @@
     "description": "A core composer package",
     "autoload": {
         "psr-4": {
-            "\\": "src/"
+            "core\\": "src/"
         }
     },
     "minimum-stability": "dev",
