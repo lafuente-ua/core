@@ -1,0 +1,11 @@
+{
+    "name": "lafuente-ua/core",
+    "description": "A core composer package",
+    "autoload": {
+        "psr-4": {
+            "core\\": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
