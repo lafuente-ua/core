@@ -5,7 +5,7 @@ class db extends \core\core
 /**MySQL and Redis engine core*/
 {
 	// Define constants in \core\database_config class for database connection
-
+	
 	public const REDIS_TTL = 30;
 	public const REDIS_CONFIG_TTL     = 30;
 	public const REDIS_DATA_TTL       = 30;
@@ -23,7 +23,7 @@ class db extends \core\core
 	public const REDIS_COLLECTION_PREFIX	= database_config::REDIS_USERPREFIX.'_cl_';
 
 	private const MYSQL_TIMEOUT				= 1;
-	private const MYSQL_TIMEOUT_RATIO		= 3;					// for second and others attempts
+	private const MYSQL_TIMEOUT_RATIO		= 3;		// for second and others attempts
 
 	private $_sql = null;
 	private $_redis = null;

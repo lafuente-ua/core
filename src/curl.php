@@ -33,7 +33,7 @@ class curl extends \core\core
 		}
 		return null;
 	}
-	public function jsonPost($data)
+	public function jsonPost($data = [])
 	{
 		if($this->_url && is_array($data))
 		{
@@ -44,16 +44,16 @@ class curl extends \core\core
 			$this->_init(http_build_query($data));
 			if($result = curl_exec($this->_curl))
 			{
-				if(($data = json_decode($result))
+				if(($rdata = json_decode($result))
 					&& (json_last_error() == JSON_ERROR_NONE))
-					return $data;
+					return $rdata;
 				else
 					return (object)['error'=>true,'raw'=>$result];
 			}
 		}
 		return null;
 	}
-	public function jsonJson($data)
+	public function jsonJson($data = [])
 	{
 		if($this->_url && 
 			(is_array($data) || is_object($data)))
@@ -65,9 +65,9 @@ class curl extends \core\core
 			$this->_init(json_encode($data, JSON_UNESCAPED_UNICODE));
 			if($result = curl_exec($this->_curl))
 			{
-				if(($data = json_decode($result))
+				if(($rdata = json_decode($result))
 					&& (json_last_error() == JSON_ERROR_NONE))
-					return $data;
+					return $rdata;
 				else
 					return (object)['error'=>true,'raw'=>$result];
 			}
@@ -76,20 +76,25 @@ class curl extends \core\core
 	}
 	protected function _init($data = null)
 	{
-		$this->_curl = curl_init($this->_url);
-		curl_setopt_array($this->_curl,
-			[CURLOPT_POST => $this->_post,
-			CURLOPT_POSTFIELDS => $data,
-			CURLOPT_HTTPHEADER => $this->_headers,
+		$curl_options = [
+			CURLOPT_POST => false,
 			CURLOPT_FOLLOWLOCATION => true,
 			CURLOPT_MAXREDIRS => 2,
 			CURLOPT_CONNECTTIMEOUT => self::CURL_TIMEOUT,
 			CURLOPT_SSL_VERIFYPEER => false,
 			CURLOPT_SSL_VERIFYHOST => false,
 			CURLOPT_TIMEOUT => self::CURL_TIMEOUT,
-			CURLOPT_REFERER => $this->_url,
 			CURLOPT_HEADER => false,
-			CURLOPT_RETURNTRANSFER => true]);
+			CURLOPT_HTTPHEADER => $this->_headers,
+			CURLOPT_REFERER => $this->_url,
+			CURLOPT_RETURNTRANSFER => true];
+		if($this->_post)
+		{
+			$curl_options[CURLOPT_POST] = true;
+			$curl_options[CURLOPT_POSTFIELDS] = $data;
+		}
+		$this->_curl = curl_init($this->_url);
+		curl_setopt_array($this->_curl, $curl_options);
 		return $this;
 	}
 }

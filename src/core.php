@@ -376,6 +376,11 @@ class core
 		if(app::getSessionAllowed())
 			unset($_SESSION[$name]);
 	}
+	/**Get environment object */
+	public static function env()
+	{
+		return app::env();
+	}
 	/**Return formatted url from existing url and alernate data: {args, lang, frontname, action, merge}*/
 	public function getUrl($url = null, $data = new \stdClass())
 	{

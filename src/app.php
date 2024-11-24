@@ -15,6 +15,8 @@ class app
 	private static $_layout_cache_allowed = true;
 	private static $_request_data = null;
 	private static $_bad_ref = [];
+	private static $_session_ttl = self::SESSION_TTL;
+	private static $_env = null;
 
 	private static function _init()
 	{
@@ -92,7 +94,7 @@ class app
 			'use_only_cookies' => 1,
 			'use_strict_mode' => 1,
 			'save_handler' => 'files',
-			'cookie_lifetime' => (time() + self::SESSION_TTL),
+			'cookie_lifetime' => (self::$_session_ttl ? (time() + self::$_session_ttl) : 0),
 			'cookie_httponly' => 1,
 			'cookie_secure' => 1,
 			'cookie_domain' => ''
@@ -139,9 +141,12 @@ class app
 		if(!$found)
 			self::$_bad_ref[] = $ref;
 	}
-	final public static function run()
+	final public static function run($env = null)
 	{
 		$cached = false;
+		self::$_env = is_object($env) ? $env : new stdClass();
+		self::$_session_ttl = intval(self::$_env?->session_ttl) ?: self::SESSION_TTL;
+		// self::$_session_ttl = self::SESSION_TTL;
 		$page_key = db::REDIS_CONTENT_PREFIX.str_replace(DIRECTORY_SEPARATOR,'_',
 			trim($_SERVER['REQUEST_URI'], " #&?\n\r\t\v\x00\/"));
 		if(!(self::$_redis = db::get()->redis()))
@@ -196,6 +201,10 @@ class app
 	public static function getSessionAllowed()
 	{
 		return (self::$_session_allowed && self::$_session_started);
+	}
+	public static function env()
+	{
+		return self::$_env;
 	}
 }
 ?>

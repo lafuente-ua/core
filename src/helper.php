@@ -9,10 +9,10 @@ class helper extends \core\core
 	public static function keyGen($length = null)
 	{
 		$length = $length ?: self::KEY_LENGTH;
-		$text = substr(sha1(microtime().random_int(99999999,PHP_INT_MAX)),random_int(1,40-$length*2));
+		$text = random_bytes($length);
 		$result = '';
-		for($idx=0; $idx<($length*2); $idx+=2)
-			$result .= self::KEY_STR[hexdec(substr($text,$idx,2)) & 0x2F];
+		for($idx=0; $idx<$length; $idx++)
+			$result .= self::KEY_STR[ord($text[$idx]) & 0x3F];
 		return $result;
 	}
 }
